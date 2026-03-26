@@ -11,7 +11,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'tradbot-crm-secret-2026';
 // PostgreSQL pool
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+  ssl: { rejectUnauthorized: false }
 });
 
 // Initialize database schema
