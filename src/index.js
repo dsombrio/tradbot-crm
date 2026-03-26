@@ -335,7 +335,11 @@ app.get('/api/dashboard', authenticate, async (req, res) => {
     SELECT t.*, c.first_name, c.last_name, c.company 
     FROM tasks t LEFT JOIN contacts c ON t.contact_id = c.id 
     WHERE t.user_id = $1 AND t.status = 'pending' 
-    ORDER BY t.created_at DESC LIMIT 10
+    ORDER BY t.created_at DESC LIMIT 20
+  `, [req.userId]);
+  
+  const pendingCount = await pool.query(`
+    SELECT COUNT(*) as count FROM tasks WHERE user_id = $1 AND status = 'pending'
   `, [req.userId]);
   
   const activeDeals = await pool.query(`
@@ -352,6 +356,7 @@ app.get('/api/dashboard', authenticate, async (req, res) => {
   
   res.json({ 
     tasks: tasks.rows, 
+    pendingCount: parseInt(pendingCount.rows[0].count),
     activeDeals: activeDeals.rows[0], 
     recentNotes: recentNotes.rows 
   });
